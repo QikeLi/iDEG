@@ -1,0 +1,11 @@
+* Learning the book [[http://r-pkgs.had.co.nz/][R Packages]]
+** Learning Notes
+*** Object documentation
+ Two other tags make it easier for the user to find documentation:
+
+ @aliases alias1 alias2 ... adds additional aliases to the topic. An alias is another name for the topic that can be used with ?.
+
+ @keywords keyword1 keyword2 ... adds standardised keywords. Keywords are optional, but if present, must be taken from a predefined list found in file.path(R.home("doc"), "KEYWORDS").
+
+ Generally, keywords are not that useful except for @keywords internal. Using the internal keyword removes the function from the package index and disables some of their automated tests. It’s common to use @keywords internal for functions that are of interest to other developers extending your package, but not most users.
+
