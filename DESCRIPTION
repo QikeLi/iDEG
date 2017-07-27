@@ -11,5 +11,9 @@ RoxygenNote: 6.0.1
 Suggests: testthat,
     knitr,
     rmarkdown
-Imports: stats,edgeR,locfdr,graphics,grDevices
+Imports: DESeq2,
+	 stats,
+	 locfdr,
+	 graphics,
+	 grDevices
 VignetteBuilder: knitr
