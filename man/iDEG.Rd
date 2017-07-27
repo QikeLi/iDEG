@@ -5,32 +5,45 @@
 \title{Identification of \emph{i}ndividualized \emph{d}ifferentially
 \emph{e}xpressed \emph{g}enes (iDEG).}
 \usage{
-iDEG(baseline, case, cutOff = 0.2, normalization = F,
-  dataDistribution = c("NB", "Poisson"), numBin = 100, estSize = F,
-  rankBaseline = T, estBaseline = F, constDisp = T, spar = NULL,
-  df = 7, nulltype = 1, pct = 1e-04, plot = 0)
+iDEG(baseline, case, normalization = F, dataDistribution = c("NB",
+  "Poisson"), numBin = 100, rankBaseline = T, estBaseline = F,
+  estSize = F, spar = NULL, plot = 0, constDisp = T, df = 7,
+  nulltype = 1, pct = 1e-04)
 }
 \arguments{
-\item{baseline}{A vector of gene expression levels of the baseline
+\item{baseline}{a vector of gene expression levels of the baseline
 transcriptome (e.g., healthy tissue)}
 
-\item{case}{A vector of gene expression levels of the case transcriptome (e.g., tumor tissue)}
+\item{case}{a vector of gene expression levels of the case transcriptome (e.g., tumor tissue)}
 
-\item{normalization}{A logical variable indicating if normalization has been done}
+\item{normalization}{a logical variable indicating if normalization has been done}
 
-\item{numBin}{Number of bins used to group all genes into. Default is 100.}
+\item{dataDistribution}{the distribuitonal assumption of the RNA-Seq data under analysis. Possible values are 'Poisson' and 'NB'. Default is NB--negative binomial.}
 
-\item{rankBaseline}{If True, iDEG groups all genes based on the gene expression levels of the baseline transcriptome. If False, iDEG group all genes based on the gene expression levels of the average of baseline and case transcriptomes.}
+\item{numBin}{number of bins used to group all genes into. Default is 100.}
 
-\item{constDisp}{If True, iDEG assumes the dispersion is a count across all genes. If False, iDEG assume dispersion is a smooth fucntion os expression mean}
+\item{rankBaseline}{if True, iDEG groups all genes based on the gene expression levels of the baseline transcriptome. If False, iDEG group all genes based on the gene expression levels of the average of baseline and case transcriptomes.}
+
+\item{estBaseline}{compute the dispersion parameter only using the baseline transcriptome}
+
+\item{estSize}{if True, size parameter is estiamted from each bin; if False,
+dispersion parameter is estiamted from each bin.}
+
+\item{spar}{smoothing parameter used to fit a smoothing spline, typically
+(but not necessarily) in (0,1].  The coefficient lambda of the integral
+of the squared  second derivative in the fit (penalized log likelihood)
+criterion is a monotone function of ‘spar’, see the details from \code{help(smooth.spline)}}
+
+\item{plot}{plots desired.  0 gives no plots. 1 gives single plot showing the
+histogram of zz and fitted densities f and p0*f0.}
+
+\item{constDisp}{if True, iDEG assumes the dispersion is a count across all genes. If False, iDEG assume dispersion is a smooth fucntion os expression mean}
 
 \item{df}{the degrees of freedom used for estimating marginal distrution.}
 
-\item{nulltype}{Type of null distribution assumed in computing the probability of gene differential expression. 0 is the theoretical null N(0,1), 1 is maximum likelihood estimation.}
+\item{nulltype}{type of null distribution assumed in computing the probability of gene differential expression. 0 is the theoretical null N(0,1), 1 is maximum likelihood estimation.}
 
 \item{pct}{the percentage of genes exculded from fiting the two-group mixture model.}
-
-\item{dataDistribuiton}{The distribuitonal assumption of the RNA-Seq data under analysis. Possible values are 'Poisson' and 'NB'. Default is NB--negative binomial.}
 }
 \value{
 'iDEG' produces a list containing the following elements:

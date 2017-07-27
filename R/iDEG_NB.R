@@ -2,9 +2,11 @@
 
 ####### define a function for finding DEGs under negative binomial distribution and non-constant overdispersion assumptions 
 iDEG.NB <- function (dataTest, data1, ind0 ,
-                     cutOff, normalization, numBin,
-                     estSize, rankBaseline, estBaseline,
-                     constDisp, spar, df, nulltype, pct, plot){ #data.test needs to be count matrix, baseline needs to be baseline, case is the case
+                     ## cutOff,
+                     normalization, numBin,rankBaseline, 
+                     estSize,
+                     estBaseline, spar,
+                     constDisp, df, nulltype, pct, plot){ #data.test needs to be count matrix, baseline needs to be baseline, case is the case
     if(normalization){
     cds <- edgeR::DGEList(dataTest)
     cds <- edgeR::estimateCommonDisp(cds)
@@ -14,13 +16,13 @@ iDEG.NB <- function (dataTest, data1, ind0 ,
     if(rankBaseline){      #if rank based on baseline transcriptome
         ## 
         ## bin genes according to percentiles based on the baseline transcriptome
-        ind_bins <- split(1:dim(dataTest)[1],cut(dataTest[,'baseline'],breaks = unique(round(quantile(dataTest[,'baseline'],seq(1/numBin,1, by = 1/numBin)),5)),includeLowest = T))
+        ind_bins <- split(1:dim(dataTest)[1],cut(dataTest[,'baseline'],breaks = unique(round(stats::quantile(dataTest[,'baseline'],seq(1/numBin,1, by = 1/numBin)),5)),includeLowest = T))
     }else if (!rankBaseline){             #if ran based on the average of the transcritpomes
 ###########################################################################
         ## note that the differentially expressed genes may have their mean expression shifted up or down
         expMeanHat <- rowMeans(dataTest)    #mean of the two expression levels for each gene
         ## bin genes according to percentiles based on the average of the two transcriptomes
-        ind_bins <- split(1:dim(dataTest)[1],cut(expMeanHat,breaks = unique(quantile(expMeanHat,seq(1/numBin,1, by = 1/numBin))),includeLowest = T))
+        ind_bins <- split(1:dim(dataTest)[1],cut(expMeanHat,breaks = unique(stats::quantile(expMeanHat,seq(1/numBin,1, by = 1/numBin))),includeLowest = T))
 ###########################################################################
     }
     
@@ -36,18 +38,18 @@ iDEG.NB <- function (dataTest, data1, ind0 ,
     if(constDisp){ # if we assume overdispersion is the same across all windows
         ## estimate the constant overdispersion by fitting a linear regression model withou intercept, since variance-mean = mean^2*dispersion
         if(estSize){                    # if estimate size
-            sizeHat <- lm(yTmp~0+xTmp)$coefficients
+            sizeHat <- stats::lm(yTmp~0+xTmp)$coefficients
         }else{                          # if estimate dispersion
-            dispHat <- lm(xTmp~0+yTmp)$coefficients
+            dispHat <- stats::lm(xTmp~0+yTmp)$coefficients
         }
     }else{ # if we assume overdispersion vary across windows but similar when expression levels are similar
         if(estSize){                    # if estimate size
-            fit_s <- smooth.spline(par_bin['bin_mean',],yTmp/xTmp, spar = spar)
+            fit_s <- stats::smooth.spline(par_bin['bin_mean',],yTmp/xTmp, spar = spar)
         } else{                     #if estiate dispersion
-            fit_s <- smooth.spline(par_bin['bin_mean',],xTmp/yTmp, spar = spar)
+            fit_s <- stats::smooth.spline(par_bin['bin_mean',],xTmp/yTmp, spar = spar)
         }
         ## size.hat <- predict(fit.s, data.test[,'baseline'])$y
-        fitted_y <- predict(fit_s, par_bin['bin_mean',])$y
+        fitted_y <- stats::predict(fit_s, par_bin['bin_mean',])$y
         fitted_y <- pmax(fitted_y, min(fitted_y[fitted_y>0]))
         if(length(ind_bins) != length(fitted_y)) stop('check alpha function fitting')
         tmpHat <- numeric(length = dim(dataTest)[1])
@@ -76,7 +78,7 @@ iDEG.NB <- function (dataTest, data1, ind0 ,
     ## sd_hat <-  mad(data_vst)
 
     ## compute local fdr
-    zz <- (data_vst[,2]-data_vst[,1])/mad(data_vst[,2]-data_vst[,1])
+    zz <- (data_vst[,2]-data_vst[,1])/stats::mad(data_vst[,2]-data_vst[,1])
     local_fdr <- locfdr::locfdr(zz, plot = plot, df = df, pct = pct, nulltype = nulltype)$fdr
     data1 <- as.data.frame(data1)
     ## data1[!ind0,'p_value'] <- p_diff
@@ -84,8 +86,8 @@ iDEG.NB <- function (dataTest, data1, ind0 ,
     data1[ind0,'local_fdr']  <- 1 # we assign local_fdr 1 for the genes whose expression levels are zero in both conditions
     data1[!ind0,'statistics'] <- zz
     data1[ind0,'statistics'] <- 0
-    DE_status <- rep(FALSE, dim(data1)[1])
-    DE_status[!ind0] <- data1[!ind0,'local_fdr']<=cutOff
+    ## DE_status <- rep(FALSE, dim(data1)[1])
+    ## DE_status[!ind0] <- data1[!ind0,'local_fdr']<=cutOff
     if(constDisp){
         ls <- list(result = data1, sizeHat = sizeHat, zeroGenes = ind0)
     }else if(!constDisp){
@@ -100,15 +102,15 @@ f.window.mad <- function(index, data_par_est,estBaseline){ # a function to calcu
     data_par_est <- data_par_est[index,]
     if(estBaseline){  # if we estimate the parameters for each window based on basline 
         data_tmp <- data_par_est[,'baseline']
-        var_bin <- mad(as.numeric(data_tmp))^2
+        var_bin <- stats::mad(as.numeric(data_tmp))^2
     }else if (!estBaseline){  # if we estimate the parameters for each window based on both transcriptomes
         data_diff <- data_par_est[,'case'] - data_par_est[,'baseline'] # taking the difference of the paired expression value for each gene
         ## ######################################################################################################################
         ## note that here using MAD to estimate standard deviation is not correct. when we use MAD to estimate the standard deviation of Negative Binomial distribution, the constant that need to be multipled to mad to get sd is different from the constant used for Normal distribution
-        var_bin <- mad(as.numeric(data_diff))^2/2 # estimate the variance of x, assuming they have the same gene expression mean; data1 needs to be all the differences of every gene's expression values between two conditions. mad(as.numeric(data1[index]))^2 is divided by 2 because: var(X_1 - X_2) = var(X_1) + var(X_2) when X_1 and X_2 are independent 
+        var_bin <- stats::mad(as.numeric(data_diff))^2/2 # estimate the variance of x, assuming they have the same gene expression mean; data1 needs to be all the differences of every gene's expression values between two conditions. mad(as.numeric(data1[index]))^2 is divided by 2 because: var(X_1 - X_2) = var(X_1) + var(X_2) when X_1 and X_2 are independent 
     }
     ## ######################################################################################################################
-    mean_bin <- median(as.numeric(unlist(data_par_est))) # taking the avereage of all values in x as the estimated expression mean of this window }
+    mean_bin <- stats::median(as.numeric(unlist(data_par_est))) # taking the avereage of all values in x as the estimated expression mean of this window }
     pars_oneWin <- c(bin_var = var_bin, bin_mean = mean_bin) # store the variance and mean of x in a data frame
     return(pars_oneWin)
 }
@@ -141,7 +143,7 @@ f.window.par.MLE <- function(index, dat.baseline ){ # a function to calculate th
     ## estimate MLEs from the data in this bin
     ## mle.tmp <- fitdistr(dat.bin, densfun = "negative binomial")$estimate
     m <- mean(dat.bin)
-    mle.tmp <- c(size = m^2/(var(dat.bin) -m), mu = m)
+    mle.tmp <- c(size = m^2/(stats::var(dat.bin) -m), mu = m)
     pars.oneWin <- c(dispersion = mle.tmp['size'], bin_mean = mle.tmp['mu']) # store the variance and mean of x in a data frame
     return(pars.oneWin)
 }

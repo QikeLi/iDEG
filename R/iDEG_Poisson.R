@@ -13,10 +13,10 @@ if(normalization) dataTest[,'case'] <- dataTest[,'case'] * (sum(dataTest[,'basel
     ## Varaice stabilizing transformation for Poisson data_
     data_vst <- f.vst.pois(dataTest)
     ## use median absolute deviation to estimate the variance
-    sd_hat <- mad(data_vst[,2]-data_vst[,1])
+    sd_hat <- stats::mad(data_vst[,2]-data_vst[,1])
     ## conduct Z test to give every gene a p-value
     zz <- (data_vst[,2]-data_vst[,1])/sd_hat
-    hist(zz,breaks=110)
+    ## hist(zz,breaks=110)
     local_fdr <- locfdr::locfdr(zz, df = df, nulltype = nulltype, plot = plot, pct = pct)$fdr
     data1 <- as.data.frame(data1)
     data1[!ind0,'local_fdr'] <- local_fdr

@@ -1,0 +1,19 @@
+citHeader("To cite iDEG in publications use: the different edgeR pipelines.")
+
+citEntry(entry = "Article",
+  title        = "iDEG: a single-subject method for assessing gene differential expression from two transcriptomes of an individual",
+  author       = personList(as.person("Qike Li"),
+                            as.person("Hao Helen Zhang"),
+                            as.person("Yves A. Lussier")),
+  journal      = "arXiv",
+  year         = "2017",
+  volume       = "40",
+  number       = "3",
+  pages        = "1--25",
+  url          = "http",
+  textVersion  =
+  paste("Qike Li, Hao Helen Zhang, Yves A. Lussier (2017).",
+        "iDEG: a single-subject method for assessing gene differential expression from two transcriptomes of an individual",
+        "Journal and volumn",
+        "URL http://www.")
+)

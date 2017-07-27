@@ -4,18 +4,28 @@
 #' Identify differentionally expressed genes between two conditions,
 #' and only one transcriptome is collected for each condition.  
 #' 
-#' @param baseline A vector of gene expression levels of the baseline
+#' @param baseline a vector of gene expression levels of the baseline
 #' transcriptome (e.g., healthy tissue)
-#' @param case A vector of gene expression levels of the case transcriptome (e.g., tumor tissue)
-#' @param normalization A logical variable indicating if normalization has been done
-#' @param dataDistribuiton The distribuitonal assumption of the RNA-Seq data under analysis. Possible values are 'Poisson' and 'NB'. Default is NB--negative binomial.
-#' @param numBin Number of bins used to group all genes into. Default is 100.
-##' @param rankBaseline If True, iDEG groups all genes based on the gene expression levels of the baseline transcriptome. If False, iDEG group all genes based on the gene expression levels of the average of baseline and case transcriptomes.
-#' @param constDisp If True, iDEG assumes the dispersion is a count across all genes. If False, iDEG assume dispersion is a smooth fucntion os expression mean
-#' @param nulltype Type of null distribution assumed in computing the probability of gene differential expression. 0 is the theoretical null N(0,1), 1 is maximum likelihood estimation.
+#' @param case a vector of gene expression levels of the case transcriptome (e.g., tumor tissue)
+#' @param normalization a logical variable indicating if normalization has been done
+#' @param dataDistribution the distribuitonal assumption of the RNA-Seq data under analysis. Possible values are 'Poisson' and 'NB'. Default is NB--negative binomial.
+#' @param numBin number of bins used to group all genes into. Default is 100.
+##' @param rankBaseline if True, iDEG groups all genes based on the gene expression levels of the baseline transcriptome. If False, iDEG group all genes based on the gene expression levels of the average of baseline and case transcriptomes.
+#' @param constDisp if True, iDEG assumes the dispersion is a count across all genes. If False, iDEG assume dispersion is a smooth fucntion os expression mean
+#' @param nulltype type of null distribution assumed in computing the probability of gene differential expression. 0 is the theoretical null N(0,1), 1 is maximum likelihood estimation.
 #' @param df the degrees of freedom used for estimating marginal distrution.
 #' @param pct the percentage of genes exculded from fiting the two-group mixture model.
-#'
+#' @param plot plots desired.  0 gives no plots. 1 gives single plot showing the
+#' histogram of zz and fitted densities f and p0*f0.
+#' @param spar smoothing parameter used to fit a smoothing spline, typically
+#' (but not necessarily) in (0,1].  The coefficient lambda of the integral
+#' of the squared  second derivative in the fit (penalized log likelihood)
+#' criterion is a monotone function of ‘spar’, see the details from \code{help(smooth.spline)}
+#' @param estBaseline compute the dispersion parameter only using the baseline transcriptome
+#' @param estSize if True, size parameter is estiamted from each bin; if False,
+#' dispersion parameter is estiamted from each bin.
+#' 
+#' 
 #' @return 'iDEG' produces a list containing the following elements:
 #'
 #' \describe{
@@ -43,10 +53,14 @@
 #' @export
  
 #####
-iDEG <- function (baseline, case, cutOff=.2,  normalization = F,
+iDEG <- function (baseline, case, normalization = F,
                   dataDistribution = c('NB','Poisson'), numBin = 100,
-                  estSize = F, rankBaseline = T, estBaseline = F,
-                  constDisp = T, spar = NULL, df = 7, nulltype = 1, pct = .0001, plot = 0){
+                  rankBaseline = T,
+                  estBaseline = F,
+                  estSize = F,
+                  spar = NULL,
+                  plot = 0,
+                  constDisp = T,  df = 7, nulltype = 1, pct = .0001 ){
     
     ## verify that the two transcriptomes contain the same number of genes.
     message('make sure sample 1 is baseline')
@@ -67,7 +81,7 @@ iDEG <- function (baseline, case, cutOff=.2,  normalization = F,
     data_test <- data1[!ind0,]
     if(dataDistribution == 'NB'){ 
         iDEG.NB(dataTest= data_test, data1 = data1, ind0 = ind0,
-                cutOff=cutOff,  normalization = normalization,
+                normalization = normalization,
                 numBin = numBin,estSize =estSize,
                 rankBaseline =rankBaseline, estBaseline = estBaseline,
                 constDisp = constDisp, spar = spar, df = df,

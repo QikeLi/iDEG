@@ -8,5 +8,8 @@ License: GPL-2
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
-Suggests: testthat
-Imports: edgeR
+Suggests: testthat,
+    knitr,
+    rmarkdown
+Imports: stats,edgeR,locfdr,graphics,grDevices
+VignetteBuilder: knitr
