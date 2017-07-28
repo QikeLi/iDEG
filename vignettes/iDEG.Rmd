@@ -20,12 +20,14 @@ Let's display the first few rows of the RNA-Seq data provided by iDEG package.
 library(iDEG)
 ## display the first 6 rows of an RNA-Seq dataset
 data(exp_tnbc_A2C9)
+head(exp_tnbc_A2C9)
 ```
 Remove the genes that were not detected,
 
 ```{r}
 ## remove the genes that were not detected
-exp_tnbc_A2C9 <- exp_tnbc_A2C9[!apply(exp_tnbc_A2C9, 1, function(x) x[1]<= 5 & x[2]<= 5),]
+exp_tnbc_A2C9 <- exp_tnbc_A2C9[!apply(exp_tnbc_A2C9, 1,
+                                      function(x) x[1]<= 5 & x[2]<= 5),]
 ```
 
 Each column of `exp_tnbc_A2C9` corresponds to a transcriptome. We save each column as a numerical vector and assign gene names to the names of the vectors. 

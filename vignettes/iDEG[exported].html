@@ -136,7 +136,9 @@ Abstract
 <pre class="r"><code>## load package iDEG
 library(iDEG)
 ## display the first 6 rows of an RNA-Seq dataset
-head(exp_tnbc_A2C9)</code></pre>
+data(exp_tnbc_A2C9)</code></pre>
+<pre><code>## Warning in data(exp_tnbc_A2C9): data set 'exp_tnbc_A2C9' not found</code></pre>
+<pre class="r"><code>head(exp_tnbc_A2C9)</code></pre>
 <pre><code>##       Tumor_Sample Healthy_Sample
 ## A1BG       91.9553        71.9790
 ## A1CF        1.3358         0.0000
@@ -146,7 +148,8 @@ head(exp_tnbc_A2C9)</code></pre>
 ## A2M     11824.6652     29384.6357</code></pre>
 <p>Remove the genes that were not detected,</p>
 <pre class="r"><code>## remove the genes that were not detected
-exp_tnbc_A2C9 &lt;- exp_tnbc_A2C9[!apply(exp_tnbc_A2C9, 1, function(x) x[1]&lt;= 5 &amp; x[2]&lt;= 5),]</code></pre>
+exp_tnbc_A2C9 &lt;- exp_tnbc_A2C9[!apply(exp_tnbc_A2C9, 1,
+                                      function(x) x[1]&lt;= 5 &amp; x[2]&lt;= 5),]</code></pre>
 <p>Each column of <code>exp_tnbc_A2C9</code> corresponds to a transcriptome. We save each column as a numerical vector and assign gene names to the names of the vectors.</p>
 <pre class="r"><code>## extract each transcriptome from the data frame to a numerical vector
 baseline_trans &lt;- as.vector(exp_tnbc_A2C9$Healthy_Sample)
