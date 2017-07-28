@@ -11,7 +11,7 @@ RoxygenNote: 6.0.1
 Suggests: testthat,
     knitr,
     rmarkdown
-Imports: DESeq2,
+Imports: edgeR,
 	 stats,
 	 locfdr,
 	 graphics,
