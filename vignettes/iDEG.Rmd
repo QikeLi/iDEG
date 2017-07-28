@@ -19,7 +19,7 @@ Let's display the first few rows of the RNA-Seq data provided by iDEG package.
 ## load package iDEG
 library(iDEG)
 ## display the first 6 rows of an RNA-Seq dataset
-head(exp_tnbc_A2C9)
+attach(iDEG::exp_tnbc_A2C9)
 ```
 Remove the genes that were not detected,
 

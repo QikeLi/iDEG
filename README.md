@@ -3,7 +3,5 @@ A statistical tool to identify diffentially expressed genes from two transcripto
 
 ## Installation
 ```{r}
-devtools::install_github("QikeLi/iDEG", build_vignettes=TRUE, 
-   repos=BiocInstaller::biocinstallRepos(),
-   dependencies=TRUE, type="source")
+devtools::install_github("QikeLi/iDEG", build_vignettes = TRUE)
 ```
