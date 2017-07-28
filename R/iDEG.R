@@ -1,5 +1,5 @@
-#' Identification of _i_ndividualized _D_ifferentially
-#' _E_xpressed _G_enes (iDEG).
+#' Identification of **i**ndividualized **D**ifferentially
+#' **E**xpressed **G**enes (iDEG).
 #'
 #' Identify differentionally expressed genes between two conditions,
 #' and only one transcriptome is collected for each condition.  
