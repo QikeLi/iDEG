@@ -1,5 +1,5 @@
-#' Identification of \underline{i}ndividualized \underline{d}ifferentially
-#' \underline{e}xpressed \underline{g}enes (iDEG).
+#' Identification of _i_ndividualized _D_ifferentially
+#' _E_xpressed _G_enes (iDEG).
 #'
 #' Identify differentionally expressed genes between two conditions,
 #' and only one transcriptome is collected for each condition.  
