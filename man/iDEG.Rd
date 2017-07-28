@@ -2,8 +2,8 @@
 % Please edit documentation in R/iDEG.R
 \name{iDEG}
 \alias{iDEG}
-\title{Identification of \emph{i}ndividualized \emph{d}ifferentially
-\emph{e}xpressed \emph{g}enes (iDEG).}
+\title{Identification of \underline{i}ndividualized \underline{d}ifferentially
+\underline{e}xpressed \underline{g}enes (iDEG).}
 \usage{
 iDEG(baseline, case, normalization = F, dataDistribution = c("NB",
   "Poisson"), numBin = 100, rankBaseline = T, estBaseline = F,
