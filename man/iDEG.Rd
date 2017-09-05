@@ -2,8 +2,8 @@
 % Please edit documentation in R/iDEG.R
 \name{iDEG}
 \alias{iDEG}
-\title{Identification of **i**ndividualized **D**ifferentially
-**E**xpressed **G**enes (iDEG).}
+\title{Identification of \strong{i}ndividualized \strong{D}ifferentially
+\strong{E}xpressed \strong{G}enes (iDEG).}
 \usage{
 iDEG(baseline, case, normalization = F, dataDistribution = c("NB",
   "Poisson"), numBin = 100, rankBaseline = T, estBaseline = F,
