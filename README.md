@@ -5,3 +5,60 @@ A statistical tool to identify diffentially expressed genes from two transcripto
 ```{r}
 devtools::install_github("QikeLi/iDEG", build_vignettes = TRUE)
 ```
+<center> <h1>Abstract</h1> </center>
+Single-subject RNA-Sequencing (RNA-Seq) analysis is a powerful tool to unveil personalized disease mechanisms and therefore holds great promises to advance precision medicine. The method iDEG is an implementation of single-subject RNA-Seq analysis and requires no transcriptome replicates for identifying differentially expressed genes. It identifies DEG by comparing a disease transcriptome and a matched healthy transcriptome collected from the same subject. Since RNA-Seq data are collected from a single subject, it is guaranteed that the disease mechanisms discovered by iDEG are truly personalized. The method iDEG may be used outside the realm of precision medicine as long as two matched transcriptomes are provided. Further, iDEG may be used for analogous data arose from other assay types, such as comparative ChIP-Seq, HiC, shRNA screening, mass spectrometry. 
+
+## Data input
+To identify differentially expressed genes (DEG), iDEG requires a RNA-Seq data of two transcriptomes. These two transcriptomes should be derived from the same subject, e.g., a transcriptome of a disease sample and a transcriptome of the sample patient's healthy sample. Further, these two transcriptomes should be represented by two vectors in `R`. Each element of these two vector corresponds to a gene expression level, gene names are assigned to the names of the vectors.
+Let's display the first few rows of the RNA-Seq data provided by iDEG package. 
+```{r}
+## load package iDEG
+library(iDEG)
+## display the first 6 rows of an RNA-Seq dataset
+data(exp_tnbc_A2C9)
+head(exp_tnbc_A2C9)
+```
+Remove the genes that were not detected,
+
+```{r}
+## remove the genes that were not detected
+exp_tnbc_A2C9 <- exp_tnbc_A2C9[!apply(exp_tnbc_A2C9, 1,
+                                      function(x) x[1]<= 5 & x[2]<= 5),]
+```
+
+Each column of `exp_tnbc_A2C9` corresponds to a transcriptome. We save each column as a numerical vector and assign gene names to the names of the vectors. 
+
+```{r}
+## extract each transcriptome from the data frame to a numerical vector
+baseline_trans <- as.vector(exp_tnbc_A2C9$Healthy_Sample)
+names(baseline_trans) <- rownames(exp_tnbc_A2C9)
+case_trans <- as.vector(exp_tnbc_A2C9$Tumor_Sample)
+names(case_trans) <- rownames(exp_tnbc_A2C9)
+```
+
+## Conduct iDEG
+Beside providing RNA-Seq data of two transcriptomes to iDEG, one needs to determine the distribution to model the RNA-Seq data under study, the assumption of constant dispersion across genes, if normalization is needed. In addition, one needs to specify the degrees of freedom for fitting the marginal distribution of the summary statistics derived from all genes ^[See the iDEG manuscript].
+
+```{r}
+res <- iDEG(baseline = baseline_trans,
+            case = case_trans,
+            dataDistribution = 'NB',
+            constDisp = F,
+            normalization = T,
+            df=8,
+            pct = .0001)
+```
+## 
+
+## Interpret results
+
+First, let us display the top 10 most differentially expressed genes.
+```{r}
+knitr::kable(head(res$result[order(res$result$local_fdr,decreasing = F),],10),
+             digits = 40)
+```
+
+Row names of this table are gene names. The first two columns are the input data of the two transcriptomes under comparison. The third column corresponds the values of local false discovery rate, which are probabilities of genes not being differentially expressed. The fourth column is the summary statistics, which are the effect sizes reflecting the magnitude of differential expression.  
+
+<!--  LocalWords:  iDEG
+ -->
