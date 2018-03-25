@@ -34,7 +34,7 @@ test_that("Testing the class of the estimated function",{
     transcriptome1 <- rnbinom(n = length(exp_mean1), size = 60, mu = exp_mean1)
     transcriptome2 <- rnbinom(n = length(exp_mean2), size = 60, mu = exp_mean2)
     res2 <- iDEG(transcriptome1,transcriptome2, constDisp = F)
-    expect_is(res2$alphaFuntion, 'smooth.spline')
+    expect_is(res2$alphaFunction, 'smooth.spline')
 })
 
 

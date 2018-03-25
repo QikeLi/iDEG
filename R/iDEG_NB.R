@@ -91,7 +91,7 @@ iDEG.NB <- function (dataTest, data1, ind0 ,
     if(constDisp){
         ls <- list(result = data1, sizeHat = sizeHat, zeroGenes = ind0)
     }else if(!constDisp){
-        ls <- list(result = data1, sizeHat = sizeHat, zeroGenes = ind0, alphaFuntion = fit_s)
+        ls <- list(result = data1, sizeHat = sizeHat, zeroGenes = ind0, alphaFunction = fit_s)
     }
         
     return(ls)
